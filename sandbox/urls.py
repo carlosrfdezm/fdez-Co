@@ -8,7 +8,11 @@ from django.contrib.sitemaps import views
 from django.urls import include, path
 from oscar.views import handler403, handler404, handler500
 
+
+
 from apps.sitemaps import base_sitemaps
+
+
 
 admin.autodiscover()
 
@@ -16,6 +20,9 @@ urlpatterns = [
     # Include admin as convenience. It's unsupported and only included
     # for developers.
     path('admin/', admin.site.urls),
+    
+	path('', include('payments.urls')),
+    		
 
     # i18n URLS need to live outside of i18n_patterns scope of Oscar
     path('i18n/', include(django.conf.urls.i18n)),
@@ -30,7 +37,8 @@ urlpatterns = [
 
 # Prefix Oscar URLs with language codes
 urlpatterns += i18n_patterns(
-    path('', include(apps.get_app_config('oscar').urls[0])),
+   path('', include(apps.get_app_config('oscar').urls[0])),
+   
 )
 
 if settings.DEBUG:

@@ -1,0 +1,92 @@
+/* Custom styles for modern blue theme */
+
+/* Override Bootstrap primary color to a nice blue */
+:root {
+    --bs-primary: #007bff;
+    --bs-primary-rgb: 0, 123, 255;
+}
+
+/* Body background */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Header styles */
+.header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Banner styles */
+.banner {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border-bottom: 3px solid #0056b3;
+}
+
+/* Navigation */
+.navbar {
+    background-color: #007bff !important;
+}
+
+.navbar .nav-link {
+    color: #ffffff !important;
+}
+
+.navbar .nav-link:hover {
+    color: #e9ecef !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+/* Product lists */
+.product_pod {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.product_pod:hover {
+    transform: translateY(-2px);
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Links */
+a {
+    color: #007bff;
+}
+
+a:hover {
+    color: #0056b3;
+}

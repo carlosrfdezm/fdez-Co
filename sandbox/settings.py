@@ -1,7 +1,17 @@
 import os
 import environ
 import oscar
+from pathlib import Path
+import paypalrestsdk
+from oscar.defaults import *
 
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# AÑADE ESTO PARA DEBUG:
+print("--- BUSCANDO PLANTILLAS EN: ---")
+print(os.path.join(BASE_DIR, 'templates'))
+BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
 # Path helper
@@ -123,8 +133,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            location('templates'),
+            os.path.join(BASE_DIR, 'sandbox', 'templates'),
+            os.path.join(BASE_DIR, 'templates'),
+              
         ],
+        
+	    #'APP_DIRS': True,
         'OPTIONS': {
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -256,6 +270,8 @@ LOGGING = {
 
 
 INSTALLED_APPS = [
+
+    'payments',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -264,10 +280,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-
+    'django_countries', 
+     
+    'apps.checkout.apps.CheckoutConfig',
+       
     'oscar.config.Shop',
     'oscar.apps.analytics.apps.AnalyticsConfig',
-    'oscar.apps.checkout.apps.CheckoutConfig',
+    #'oscar.apps.checkout.apps.CheckoutConfig',
     'oscar.apps.address.apps.AddressConfig',
     'oscar.apps.shipping.apps.ShippingConfig',
     'oscar.apps.catalogue.apps.CatalogueConfig',
@@ -295,6 +314,7 @@ INSTALLED_APPS = [
     'oscar.apps.dashboard.vouchers.apps.VouchersDashboardConfig',
     'oscar.apps.dashboard.communications.apps.CommunicationsDashboardConfig',
     'oscar.apps.dashboard.shipping.apps.ShippingDashboardConfig',
+    
 
     # 3rd-party apps that Oscar depends on
     'widget_tweaks',
@@ -306,8 +326,7 @@ INSTALLED_APPS = [
 
     # Django apps that the sandbox depends on
     'django.contrib.sitemaps',
-]
-
+] 
 # Add Oscar's custom auth backend so users can sign in using their email
 # address.
 AUTHENTICATION_BACKENDS = (
@@ -436,3 +455,10 @@ try:
     from settings_local import *
 except ImportError:
     pass
+
+PAYPAL_CLIENT_ID = "AVfx03CktbIA78iNEkq8NlM-t8nIkziWhQduJHLbewX13Z5NesrSogW0vxgwwJCnnj-NSAnn3cTsFQM7"
+PAYPAL_CLIENT_SECRET = "ENwMagGWPbFlXLAVSYOOTsKjuwdoy0TULbzFQ3Xnr20x6d8XXT8KAHX-UoS8vqUVnx9F7x67jxalYVvB"
+PAYPAL_API_BASE = "https://api.sandbox.paypal.com"
+PAYPAL_MODE = "sandbox"
+
+
