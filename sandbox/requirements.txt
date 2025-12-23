@@ -23,7 +23,7 @@ packaging==25.0
 paypalrestsdk==1.13.3
 gunicorn==21.2.0
 
-phonenumbers==9.0.20
+phonenumbers==9.0.21
 pillow==12.0.0
 purl==1.6
 pycountry==24.6.1
