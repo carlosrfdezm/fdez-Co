@@ -282,7 +282,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django_countries', 
      
-    'apps.checkout.apps.CheckoutConfig',
+    'sandbox.apps.checkout.apps.CheckoutConfig',
        
     'oscar.config.Shop',
     'oscar.apps.analytics.apps.AnalyticsConfig',
