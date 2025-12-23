@@ -184,7 +184,7 @@ MIDDLEWARE = [
     'oscar.apps.basket.middleware.BasketMiddleware',
 ]
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'sandbox.urls'
 
 
 # A sample logging configuration. The only tangible logging
