@@ -1,9 +1,9 @@
-from django.conf import settings
+﻿from django.conf import settings
 from oscar.apps.checkout import apps as checkout_apps
 import paypalrestsdk
 
 class CheckoutConfig(checkout_apps.CheckoutConfig):
-    name = 'apps.checkout'
+    name = 'sandbox.apps.checkout'
     label = 'checkout'  # Oscar buscará este label para reemplazar su propia configuración
 
     def ready(self):
