@@ -21,7 +21,7 @@ urlpatterns = [
     # for developers.
     path('admin/', admin.site.urls),
     
-	path('', include('payments.urls')),
+	path('', include('sandbox.payments.urls')),
     		
 
     # i18n URLS need to live outside of i18n_patterns scope of Oscar
