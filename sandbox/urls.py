@@ -10,7 +10,7 @@ from oscar.views import handler403, handler404, handler500
 
 
 
-from apps.sitemaps import base_sitemaps
+from sandbox.apps.sitemaps import base_sitemaps
 
 
 
