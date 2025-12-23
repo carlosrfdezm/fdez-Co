@@ -1,4 +1,4 @@
-import os
+﻿import os
 import environ
 import oscar
 from pathlib import Path
@@ -271,7 +271,7 @@ LOGGING = {
 
 INSTALLED_APPS = [
 
-    'payments',
+    'sandbox.payments',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
