@@ -3,7 +3,7 @@ from oscar.apps.checkout import apps as checkout_apps
 import paypalrestsdk
 
 class CheckoutConfig(checkout_apps.CheckoutConfig):
-    name = 'sandbox.apps.checkout'
+    name = 'apps.checkout'
     label = 'checkout'  # Oscar buscará este label para reemplazar su propia configuración
 
     def ready(self):

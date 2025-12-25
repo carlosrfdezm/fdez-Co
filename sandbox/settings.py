@@ -184,7 +184,7 @@ MIDDLEWARE = [
     'oscar.apps.basket.middleware.BasketMiddleware',
 ]
 
-ROOT_URLCONF = 'sandbox.urls'
+ROOT_URLCONF = 'urls'
 
 
 # A sample logging configuration. The only tangible logging
@@ -271,7 +271,7 @@ LOGGING = {
 
 INSTALLED_APPS = [
 
-    'sandbox.payments',
+    'payments',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -282,7 +282,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django_countries', 
      
-    'sandbox.apps.checkout.apps.CheckoutConfig',
+    'apps.checkout.apps.CheckoutConfig',
        
     'oscar.config.Shop',
     'oscar.apps.analytics.apps.AnalyticsConfig',

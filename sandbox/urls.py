@@ -10,7 +10,7 @@ from oscar.views import handler403, handler404, handler500
 
 
 
-from sandbox.apps.sitemaps import base_sitemaps
+from apps.sitemaps import base_sitemaps
 
 
 
@@ -21,7 +21,7 @@ urlpatterns = [
     # for developers.
     path('admin/', admin.site.urls),
     
-	path('', include('sandbox.payments.urls')),
+	path('', include('payments.urls')),
     		
 
     # i18n URLS need to live outside of i18n_patterns scope of Oscar

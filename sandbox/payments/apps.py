@@ -1,4 +1,4 @@
-from oscar.apps.checkout.apps import CheckoutConfig
+﻿from oscar.apps.checkout.apps import CheckoutConfig
 
 class PaymentsCheckoutConfig(CheckoutConfig):
     name = 'payments'
