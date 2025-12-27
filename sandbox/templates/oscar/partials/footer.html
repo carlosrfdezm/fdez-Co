@@ -1,0 +1,34 @@
+<footer class="site-footer bg-dark text-light py-4 mt-5">
+  <div class="container">
+    <div class="row">
+      <!-- Información general -->
+      <div class="col-md-4">
+        <h5>Información</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'about' %}" class="text-light">Sobre nosotros</a></li>
+          <li><a href="{% url 'terms' %}" class="text-light">Términos y condiciones</a></li>
+          <li><a href="{% url 'privacy' %}" class="text-light">Política de privacidad</a></li>
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div class="col-md-4">
+        <h5>Contacto</h5>
+        <p>Email: contacto@fdezco.com</p>
+        <p>Tel: +56 9 1234 5678</p>
+        <p>Dirección: Iquique, Chile</p>
+      </div>
+
+      <!-- Consultas / Redes -->
+      <div class="col-md-4">
+        <h5>Consultas</h5>
+        <p>¿Tienes dudas? <a href="{% url 'contact' %}" class="text-light">Escríbenos aquí</a></p>
+        <h5>Síguenos</h5>
+        <a href="https://facebook.com/fdezco" class="text-light">Facebook</a> |
+        <a href="https://instagram.com/fdezco" class="text-light">Instagram</a>
+      </div>
+    </div>
+    <hr class="bg-light">
+    <p class="text-center">&copy; {{ current_year }} fdezco.com - Todos los derechos reservados</p>
+  </div>
+</footer>
