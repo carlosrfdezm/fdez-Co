@@ -7,6 +7,9 @@ from django.contrib import admin
 from django.contrib.sitemaps import views
 from django.urls import include, path
 from oscar.views import handler403, handler404, handler500
+#from core.views import CustomHomeView
+from core.views import CustomCatalogueView, CustomSearchView, CustomCategoryView
+
 
 
 
@@ -20,6 +23,7 @@ urlpatterns = [
     # Include admin as convenience. It's unsupported and only included
     # for developers.
     path('admin/', admin.site.urls),
+   
     
 	path('', include('payments.urls')),
     		
@@ -37,10 +41,16 @@ urlpatterns = [
 
 # Prefix Oscar URLs with language codes
 urlpatterns += i18n_patterns(
-   path('', include(apps.get_app_config('oscar').urls[0])),
-   path("", include("sitepages.urls")),
-   
+    path("", CustomCatalogueView.as_view(), name="catalogue"),
+    path("search/", CustomSearchView.as_view(), name="search"),
+    path("category/<slug:category>/", CustomCategoryView.as_view(), name="catalogue-category"),
+    path("", include("sitepages.urls")),
+    path("", include(apps.get_app_config('oscar').urls[0])),
 )
+
+
+
+  
 
 if settings.DEBUG:
 

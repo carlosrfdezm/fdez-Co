@@ -18,6 +18,8 @@
             <li class="breadcrumb-item active" aria-current="page">{{ summary }}</li>
         </ol>
     </nav>
+
+
 {% endblock breadcrumbs %}
 
 {% block column_left %}
@@ -54,16 +56,11 @@
             {% endfor %}
         </div>
     {% endif %}
-    {{ block.super }}
 {% endblock %}
 
 {% block content %}
+   
 
-
-  
-
-{# Aquí sigue el contenido normal del catálogo #}
-    
     <form method="get">
         {# Render other search params as hidden inputs #}
         {% for value in selected_facets %}
@@ -113,10 +110,44 @@
         <p class="nonefound">{% trans "No products found." %}</p>
     {% endif %}
 
-    {{ block.super }}
+    
+    
+
+    {# Aquí sigue el contenido normal del catálogo #}
+{% if offers_with_products %}
+<h2>Ofertas</h2>
+<div id="offers-carousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
+  <div class="carousel-inner">
+    {% for item in offers_with_products %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="row">
+          {% for product in item.products|slice:":4" %}
+            <div class="col-md-3">
+              {% render_product product %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#offers-carousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#offers-carousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+{% endif %}
+
+
 
 {% endblock content %}
+
+{# Carrusel de Ofertas #}
    
+ 
+
+
 {% block onbodyload %}
     {{ block.super }}
     oscar.search.init();

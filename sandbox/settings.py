@@ -145,6 +145,7 @@ TEMPLATES = [
                 'django.template.loaders.app_directories.Loader',
             ],
             'context_processors': [
+                'core.context_processors.offers_processor',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.request',
                 'django.template.context_processors.debug',
@@ -152,6 +153,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
+
 
                 # Oscar specific
                 'oscar.apps.search.context_processors.search_form',
@@ -272,6 +274,8 @@ LOGGING = {
 INSTALLED_APPS = [
 
     'payments',
+    'core',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

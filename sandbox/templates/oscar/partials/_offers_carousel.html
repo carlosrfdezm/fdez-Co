@@ -1,0 +1,24 @@
+{% if products_on_offer %}
+<div id="offers-carousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for product in products_on_offer %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="d-block w-100 p-4 bg-light text-center">
+                <h5>{{ product.title }}</h5>
+                {% if product.primary_image %}
+                    <img src="{{ product.primary_image.original.url }}" class="img-fluid" alt="{{ product.title }}">
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#offers-carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#offers-carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+{% endif %}
+
+
