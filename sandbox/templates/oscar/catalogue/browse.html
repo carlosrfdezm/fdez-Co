@@ -27,18 +27,30 @@
     {% if tree_categories %}
         <h4>{% trans "Show results for" %}</h4>
         <div class="side_categories card card-body bg-light">
-            <ul class="nav nav-list flex-column">
+            <ul class="nav nav-list flex-column accordion-menu">
                 {% for tree_category in tree_categories %}
-                    <li class="mt-2">
-                        <a href="{{ tree_category.url }}">
-                            {% if tree_category.pk == category.pk %}
-                                <strong>{{ tree_category.name }}</strong>
-                            {% else %}
-                                {{ tree_category.name }}
+                    <li class="mt-2 category-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ tree_category.url }}" class="category-link">
+                                {% if tree_category.pk == category.pk %}
+                                    <strong>{{ tree_category.name }}</strong>
+                                {% else %}
+                                    {{ tree_category.name }}
+                                {% endif %}
+                            </a>
+                            {% if tree_category.has_children %}
+                                <span class="toggle-icon" style="cursor: pointer; padding: 0 10px;">
+                                    <i class="fas fa-chevron-down"></i>
+                                </span>
                             {% endif %}
-                        </a>
+                        </div>
 
-                        {% if tree_category.has_children %}<ul>{% else %}</li>{% endif %}
+                        {% if tree_category.has_children %}
+                            <ul class="subcategories" style="display: none; list-style: none; padding-left: 20px;">
+                        {% else %}
+                            </li>
+                        {% endif %}
+                        
                         {% for n in tree_category.num_to_close %}
                             </ul></li>
                         {% endfor %}
@@ -46,6 +58,7 @@
             </ul>
         </div>
     {% endif %}
+
     {% if has_facets %}
         <h4>{% trans "Refine by" %}</h4>
         <div class="side_categories card card-body bg-light">
@@ -56,7 +69,59 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    <style>
+        .accordion-menu .toggle-icon i {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+        .accordion-menu .toggle-icon.active i {
+            transform: rotate(180deg);
+        }
+        .category-item {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .subcategories {
+            margin-top: 5px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('.toggle-icon');
+            
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parentLi = this.closest('.category-item');
+                    const subMenu = parentLi.querySelector('.subcategories');
+                    
+                    if (subMenu) {
+                        const isVisible = subMenu.style.display === 'block';
+                        subMenu.style.display = isVisible ? 'none' : 'block';
+                        this.classList.toggle('active', !isVisible);
+                    }
+                });
+            });
+
+            // Opcional: Mantener abierta la categoría si estamos en una subcategoría activa
+            const activeLink = document.querySelector('.category-item strong');
+            if (activeLink) {
+                let parentSubMenu = activeLink.closest('.subcategories');
+                while (parentSubMenu) {
+                    parentSubMenu.style.display = 'block';
+                    const toggle = parentSubMenu.parentElement.querySelector('.toggle-icon');
+                    if (toggle) toggle.classList.add('active');
+                    parentSubMenu = parentSubMenu.parentElement.closest('.subcategories');
+                }
+            }
+        });
+    </script>
 {% endblock %}
+
 
 {% block content %}
    
@@ -116,7 +181,7 @@
     {# Aquí sigue el contenido normal del catálogo #}
 {% if offers_with_products %}
 <h2>Ofertas</h2>
-<div id="offers-carousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
+<div id="offers-carousel" class="carousel slide mb-4" data-ride="carousel" data-interval="3000" data-pause="hover">
   <div class="carousel-inner">
     {% for item in offers_with_products %}
       <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -130,25 +195,39 @@
       </div>
     {% endfor %}
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#offers-carousel" data-bs-slide="prev">
+  <a class="carousel-control-prev" href="#offers-carousel" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#offers-carousel" data-bs-slide="next">
+  </a>
+  <a class="carousel-control-next" href="#offers-carousel" role="button" data-slide="next">
     <span class="carousel-control-next-icon"></span>
-  </button>
+  </a>
 </div>
 {% endif %}
 
 
 
+
+
 {% endblock content %}
 
-{# Carrusel de Ofertas #}
-   
- 
+
+{% block extrascripts %}
+  {{ block.super }}
+  <script>
+    $(document).ready(function(){
+      $('#offers-carousel').carousel({
+        interval: 3000,
+        pause: 'hover',
+        wrap: true
+      });
+    });
+  </script>
+{% endblock %}
+
 
 
 {% block onbodyload %}
     {{ block.super }}
     oscar.search.init();
 {% endblock %}
+
