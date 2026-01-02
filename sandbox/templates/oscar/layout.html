@@ -4,6 +4,7 @@
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static "oscar/css/styles.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "custom.css" %}" />
+    
 {% endblock %}
 
 {% block layout %}
@@ -77,3 +78,4 @@
     {{ block.super }}
     oscar.init();
 {% endblock %}
+
