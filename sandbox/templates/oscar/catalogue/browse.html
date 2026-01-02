@@ -180,28 +180,303 @@
 
     {# Aquí sigue el contenido normal del catálogo #}
 {% if offers_with_products %}
-<h2>Ofertas</h2>
-<div id="offers-carousel" class="carousel slide mb-4" data-ride="carousel" data-interval="3000" data-pause="hover">
-  <div class="carousel-inner">
-    {% for item in offers_with_products %}
-      <div class="carousel-item {% if forloop.first %}active{% endif %}">
-        <div class="row">
-          {% for product in item.products|slice:":4" %}
-            <div class="col-md-3">
-              {% render_product product %}
+<div class="offers-container mt-5 mb-5">
+    <h2 class="text-center mb-4" style="color: #2c3e50; font-weight: 600;">
+        <i class="fas fa-tags mr-2"></i>Ofertas Especiales
+    </h2>
+    
+    <div class="carousel-wrapper position-relative">
+        <!-- Marco decorativo -->
+        <div class="carousel-frame"></div>
+        
+        <div id="offers-carousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+            <div class="carousel-inner p-3">
+                {% for item in offers_with_products %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row">
+                        {% for product in item.products %}
+                        <div class="col-md-3">
+                            <div class="product-wrapper h-100 p-2">
+                                {% render_product product %}
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-          {% endfor %}
+            
+            <!-- Flechas de desplazamiento personalizadas -->
+            {% if offers_with_products.0.products|length > 4 %}
+            <a class="carousel-control-prev carousel-arrow" href="#offers-carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon arrow-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next carousel-arrow" href="#offers-carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon arrow-icon" aria-hidden="true"></span>
+                <span class="sr-only">Siguiente</span>
+            </a>
+            {% endif %}
         </div>
-      </div>
-    {% endfor %}
-  </div>
-  <a class="carousel-control-prev" href="#offers-carousel" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </a>
-  <a class="carousel-control-next" href="#offers-carousel" role="button" data-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </a>
+    </div>
 </div>
+
+<style>
+.offers-container {
+    position: relative;
+    padding: 25px;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.carousel-wrapper {
+    position: relative;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.05),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.carousel-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.carousel-frame:before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+#offers-carousel {
+    position: relative;
+    z-index: 2;
+}
+
+.carousel-inner {
+    border-radius: 12px;
+    background: linear-gradient(to right, #fafafa, #ffffff);
+}
+
+.product-wrapper {
+    background: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+}
+
+.product-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(52, 152, 219, 0.1);
+    border-color: #3498db;
+}
+
+/* Flechas personalizadas */
+.carousel-arrow {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 50%;
+    opacity: 0.9;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 0 2px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-arrow:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.2),
+        0 0 0 2px #3498db;
+}
+
+.carousel-control-prev {
+    left: -30px;
+}
+
+.carousel-control-next {
+    right: -30px;
+}
+
+.arrow-icon {
+    background-image: none;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    opacity: 0.8;
+}
+
+.carousel-control-prev .arrow-icon:before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    width: 15px;
+    height: 15px;
+    border-left: 3px solid #3498db;
+    border-bottom: 3px solid #3498db;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.carousel-control-next .arrow-icon:before {
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    width: 15px;
+    height: 15px;
+    border-right: 3px solid #3498db;
+    border-top: 3px solid #3498db;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* Indicadores del carousel */
+.carousel-indicators {
+    bottom: -40px;
+}
+
+.carousel-indicators li {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #bdc3c7;
+    margin: 0 6px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators li.active {
+    background-color: #3498db;
+    transform: scale(1.3);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .offers-container {
+        padding: 15px;
+        margin: 0 -15px;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .carousel-arrow {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .carousel-control-prev {
+        left: 5px;
+    }
+    
+    .carousel-control-next {
+        right: 5px;
+    }
+    
+    .carousel-frame {
+        border-width: 1px;
+    }
+}
+
+/* Animación sutil para el título */
+h2 {
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(to right, transparent, #3498db, transparent);
+    border-radius: 2px;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+    var $carousel = $('#offers-carousel');
+    var $items = $carousel.find('.carousel-item');
+    
+    console.log('Total de slides:', $items.length);
+    
+    if ($items.length > 1) {
+        $carousel.carousel({
+            interval: 3000,
+            wrap: true,
+            pause: 'hover',
+            touch: true
+        }).carousel('cycle');
+        
+        // Añadir indicadores dinámicamente
+        if ($items.length > 1) {
+            var indicators = '<ol class="carousel-indicators">';
+            for (var i = 0; i < $items.length; i++) {
+                indicators += '<li data-target="#offers-carousel" data-slide-to="' + i + '" ' + 
+                             (i === 0 ? 'class="active"' : '') + '></li>';
+            }
+            indicators += '</ol>';
+            $carousel.prepend(indicators);
+        }
+        
+        // Efecto hover en productos
+        $('.product-wrapper').hover(
+            function() {
+                $(this).css('transform', 'translateY(-5px)');
+            },
+            function() {
+                $(this).css('transform', 'translateY(0)');
+            }
+        );
+    }
+    
+    // Asegurar que las flechas estén siempre visibles
+    $('.carousel-arrow').css('opacity', '0.9');
+});
+</script>
 {% endif %}
 
 
@@ -215,10 +490,11 @@
   {{ block.super }}
   <script>
     $(document).ready(function(){
-      $('#offers-carousel').carousel({
+      // Inicializar el carousel con Bootstrap 5
+      var offersCarousel = new bootstrap.Carousel(document.getElementById('offers-carousel'), {
         interval: 3000,
-        pause: 'hover',
-        wrap: true
+        wrap: true,
+        pause: 'hover'
       });
     });
   </script>
