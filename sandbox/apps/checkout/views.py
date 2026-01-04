@@ -1,17 +1,23 @@
-import paypalrestsdk
 from django.conf import settings
-from django.shortcuts import redirect
+from django.http import JsonResponse
 from oscar.apps.checkout import views
 from oscar.core.loading import get_model
 
-from django.http import JsonResponse
-import json
+# SDK nuevo de PayPal
+from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 
+# Configuración del cliente PayPal (sandbox)
+environment = SandboxEnvironment(
+    client_id=settings.PAYPAL_CLIENT_ID,
+    client_secret=settings.PAYPAL_CLIENT_SECRET
+)
+client = PayPalHttpClient(environment)
 
-
-# Cargamos modelos de Oscar para registrar el pago después
+# Modelos de Oscar para registrar el pago
 PaymentSourceType = get_model('payment', 'SourceType')
 PaymentSource = get_model('payment', 'Source')
+
 
 class PaymentDetailsView(views.PaymentDetailsView):
     template_name = 'oscar/checkout/payment_details.html'
@@ -22,55 +28,59 @@ class PaymentDetailsView(views.PaymentDetailsView):
         return ctx
 
     def get(self, request, *args, **kwargs):
-        # Esto lanzará un error que veremos en el navegador
-        # Confirmando que Django POR FIN entró a tu archivo.
-        
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        # Caso confirmación de pedido desde preview
+        if request.POST.get("action") == "place_order":
+            return super().post(request, *args, **kwargs)
+
+        # Caso AJAX desde botón PayPal → crear orden
         basket = self.request.basket
-        
-        # 1. Obtenemos el método de envío y la dirección para calcular el costo
         shipping_address = self.get_shipping_address(basket)
         shipping_method = self.get_shipping_method(basket, shipping_address)
         shipping_charge = shipping_method.calculate(basket)
-
-        # 2. Ahora pasamos el shipping_charge al total
         order_total = self.get_order_totals(basket, shipping_charge=shipping_charge)
 
-        # 3. Configuramos el pago en PayPal usando el total correcto
-        payment = paypalrestsdk.Payment({
-            "intent": "sale",
-            "payer": {"payment_method": "paypal"},
-            "redirect_urls": {
-                "return_url": request.build_absolute_uri('/checkout/preview/'),
-                "cancel_url": request.build_absolute_uri('/checkout/payment-details/'),
-            },
-            "transactions": [{
+        # Crear orden en PayPal
+        create_request = OrdersCreateRequest()
+        create_request.prefer("return=representation")
+        create_request.request_body({
+            "intent": "CAPTURE",
+            "purchase_units": [{
                 "amount": {
-                    "total": "{:.2f}".format(order_total.incl_tax),
-                    "currency": "EUR"
-                },
-                "description": f"Pedido {basket.id}"
+                    "currency_code": "EUR",
+                    "value": "{:.2f}".format(order_total.incl_tax)
+                }
             }]
         })
 
-        if payment.create():
-            # EN LUGAR DE REDIRECT, DEVOLVEMOS EL ID
-            return JsonResponse({'id': payment.id})
-        
-        return JsonResponse({'error': 'No se pudo crear el pago'}, status=400)
+        response = client.execute(create_request)
+        order_id = response.result.id
+
+        # Guardamos el ID en sesión para usarlo en handle_payment
+        request.session['paypal_order_id'] = order_id
+
+        return JsonResponse({'id': order_id})
 
     def handle_payment(self, order_number, total, **kwargs):
-        # Este método se ejecuta al confirmar el pedido final
-        payment_id = self.request.session.get('paypal_payment_id')
-        payer_id = self.request.GET.get('PayerID')
-        
-        payment = paypalrestsdk.Payment.find(payment_id)
-        if payment.execute({"payer_id": payer_id}):
+        order_id = self.request.session.get('paypal_order_id')  # debe coincidir con la clave usada en post()
+
+        if not order_id:
+             raise views.PaymentError("No se encontró el ID de la orden de PayPal en la sesión.")
+
+        capture_request = OrdersCaptureRequest(order_id)
+        capture_response = client.execute(capture_request)
+
+        if capture_response.result.status == "COMPLETED":
             source_type, _ = PaymentSourceType.objects.get_or_create(name='PayPal')
-            source = PaymentSource(source_type=source_type, amount_allocated=total.incl_tax, reference=payment_id)
+            source = PaymentSource(
+                source_type=source_type,
+                amount_allocated=total.incl_tax,
+                reference=order_id
+            )
             self.add_payment_source(source)
             self.add_payment_event('Settled', total.incl_tax)
         else:
             raise views.PaymentError("Error al procesar el pago con PayPal.")
+

@@ -9,45 +9,45 @@
         </button>
     </form>
 </div>
-    <div class="well">
-        <h2>{% trans "Pagar con PayPal" %}</h2>
-        <p>{% trans "Haz clic en el botón de abajo para pagar de forma segura sin salir de nuestra tienda." %}</p>
-        
-        <div id="paypal-button-container"></div>
-    </div>
+<div class="well">
+    <h2>{% trans "Pagar con PayPal" %}</h2>
+    <p>{% trans "Haz clic en el botón de abajo para pagar de forma segura sin salir de nuestra tienda." %}</p>
+    
+    <div id="paypal-button-container"></div>
+</div>
 
-    <script src="https://www.paypal.com/sdk/js?client-id={{ PAYPAL_CLIENT_ID }}&currency=EUR"></script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ PAYPAL_CLIENT_ID }}&currency=EUR"></script>
 
-    <script>
-    paypal.Buttons({
-        // USAMOS createPayment en lugar de createOrder para IDs tipo PAYID-
-        createPayment: function(data, actions) {
-            return fetch("{% url 'checkout:payment-details' %}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    throw new Error('Error en el servidor');
-                }
-                return res.json();
-            })
-            .then(function(data) {
-                // Aquí recibimos el PAYID-XXXX de Python
-                return data.id; 
-            });
-        },
-        onApprove: function(data, actions) {
-            // Cuando el usuario acepta, lo mandamos al Preview
-            window.location.href = "{% url 'checkout:preview' %}?PayerID=" + data.payerID + "&paymentId=" + data.paymentID;
-        },
-        onError: function(err) {
-            console.error('Error en el botón de PayPal:', err);
-            alert('Hubo un error al cargar PayPal. Revisa la consola.');
-        }
-    }).render('#paypal-button-container');
+<script>
+paypal.Buttons({
+    createOrder: function(data, actions) {
+        // Llamada AJAX a tu PaymentDetailsView.post
+        return fetch("{% url 'checkout:payment-details' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(res) {
+            if (!res.ok) {
+                throw new Error('Error en el servidor');
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            // Aquí recibimos el PAYID-XXXX de Python y lo guardamos en sesión
+            return data.id;
+        });
+    },
+    onApprove: function(data, actions) {
+        // En Orders v2 el ID correcto es data.orderID
+        window.location.href = "{% url 'checkout:preview' %}";
+    },
+    onError: function(err) {
+        console.error('Error en el botón de PayPal:', err);
+        alert('Hubo un error al cargar PayPal. Revisa la consola.');
+    }
+}).render('#paypal-button-container');
 </script>
 {% endblock %}
